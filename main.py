@@ -11,6 +11,7 @@ from transformers.agents import Tool, HfEngine, ReactJsonAgent
 from huggingface_hub import InferenceClient
 from langchain_community.document_loaders import DirectoryLoader
 from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_groq import ChatGroq
 import logging
 import os
 
@@ -86,3 +87,27 @@ class RetrieverTool(Tool):
         super().__init__(**kwargs)
 
     def forward(self, query:str) -> str:
+        assert isinstance(query, str), "Your search query must be a string"
+
+        docs = self.vectordb.similarity_search(
+                query,
+                k=7,
+            )
+
+        return "\n Retrieved documents:\n" + "".join(
+                [f"==== Document {str(i)} ====\n" + doc.page_content for i, doc in enumerate(docs)]
+            )
+
+# instance of RetrieverTool
+retriever_tool = RetrieverTool(vectordb)
+
+os.environ["GROQ_API_KEY"] = "GROQ_API_KEY"
+
+llm = ChatGroq(
+        model="llama3-70b-8192",
+        temperature=0.7,
+        max_tokens=2048,
+        repetition_penalty=1.1,
+    )
+
+
