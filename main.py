@@ -26,8 +26,8 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
-
-os.mkdir("DATA")
+if not os.path.exists("DATA"):
+    os.mkdir("DATA")
 
 
 loader = DirectoryLoader("DATA", glob="*.pdf", show_progress=True)
