@@ -69,3 +69,20 @@ vectordb = FAISS.from_documents(
     )
 
 
+# RAG
+class RetrieverTool(Tool):
+    name = "retriever"
+    description = "Using semantic similarity, retrieves some documents from the knowledge base that have the closest embeddings to the input query."
+    inputs = {
+            "query": {
+                "type": "text",
+                "description": "The query to perform. This should be semantically close to the target documents. Use the affirmative form ranther then a question.",
+                }
+        }
+    output_type = "text"
+
+    def __init__(self, vectordb, **kwargs):
+        self.vectordb = vectordb
+        super().__init__(**kwargs)
+
+    def forward(self, query:str) -> str:
