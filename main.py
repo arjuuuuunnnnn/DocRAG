@@ -139,3 +139,28 @@ class OpenAIEngine:
 llm_engine = OpenAIEngine()
 
 
+
+# create agent
+agent = ReactJsonAgent(
+        tools=[retriever_tool],
+        llm_engine=llm_engine,
+        max_iterations=4,
+        verbose=2
+    )
+
+
+# helper to run the agent
+def run_agentic_rag(question:str) -> str:
+    enhanced_question = f"""Using the information contained in your knowledge base, which you can access with the 'retriever' tool,
+give a comprehensive answer to the question below.
+Respond only to the question asked, response should be concise and relevant to the question.
+If you cannot find information, do not give up and try calling your retriever again with different arguments!
+Make sure to have covered the question completely by calling the retriever tool several times with semantically different queries.
+Your queries should not be questions but affirmative form sentences: e.g. rather than "How do I load a model from the Hub in bf16?", query should be "load a model from the Hub bf16 weights".
+
+Question:
+{question}"""
+    return agent.run(enhanced_question)
+
+
+
