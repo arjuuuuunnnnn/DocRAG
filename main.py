@@ -60,4 +60,12 @@ embedding_model = HuggingFaceEmbeddings(
         encode_kwargs=encode_kwargs
     )
 
+# vector db
+logger.info("Creating Vector DB\n")
+vectordb = FAISS.from_documents(
+        documents=docs_processed,
+        embeddings=embedding_model,
+        distance_strategy=DistanceStrategy.COSINE,
+    )
+
 
