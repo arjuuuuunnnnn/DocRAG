@@ -12,6 +12,10 @@ from huggingface_hub import InferenceClient
 from langchain_community.document_loaders import DirectoryLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
+from groq import Groq
+from typing import List, Dict
+from transformers.agents.llm_engine import MessageRole, get_clean_message_list
+from huggingface_hub import InferenceClient
 import logging
 import os
 
@@ -107,7 +111,31 @@ llm = ChatGroq(
         model="llama3-70b-8192",
         temperature=0.7,
         max_tokens=2048,
-        repetition_penalty=1.1,
     )
+
+openai_role_conversions = {
+        MessageRole.TOOL_RESPONSE: MessageRole.USER,
+    }
+
+class OpenAIEngine:
+    def __init__(self, model_name="llama3-groq-70b-8192-tool-use-preview"):
+        self.model_name = model_name
+        self.client = Groq(
+                api_key=os.getenv("GROQ_API_KEY"),
+            )
+
+    def __call__(self, messages, stop_sequences=[]):
+        messages = get_clean_message_list(messages, role_conversions=openai_role_conversions)
+
+        response = self.client.query(
+                model=self.model_name,
+                messages=messages,
+                stop=stop_sequences,
+                temperature=0.5,
+                max_tokens=2048
+            )
+        return response.choices[0].message.content
+
+llm_engine = OpenAIEngine()
 
 
