@@ -3,19 +3,23 @@ import logging
 from tqdm import tqdm
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores.utils import DistanceStrategy
 from transformers import AutoTokenizer
 from langchain_community.document_loaders import DirectoryLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from transformers.agents.llm_engine import MessageRole, get_clean_message_list
+from langchain.document_loaders import TextLoader
+from langchain.text_splitter import CharacterTextSplitter
 from groq import Groq
 from transformers.agents import Tool, ReactJsonAgent
 
+
 import nltk
 nltk.download('punkt')
-
+nltk.download('punkt_tab')
+nltk.download('averaged_perceptron_tagger_eng')
 
 # Setup Logging
 logger = logging.getLogger("Admino")
@@ -72,16 +76,19 @@ embedding_model = HuggingFaceEmbeddings(
 logger.info("Creating Vector DB\n")
 vectordb = FAISS.from_documents(
     documents=docs_processed,
-    embeddings=embedding_model,
+    embedding=embedding_model,
     distance_strategy=DistanceStrategy.COSINE,
 )
+
+
 
 # Define Retriever Tool
 class RetrieverTool(Tool):
     name = "retriever"
     description = (
         "Using semantic similarity, retrieves documents from the knowledge base."
-    )
+        ) 
+    output_type = str 
 
     def __init__(self, vectordb, **kwargs):
         self.vectordb = vectordb
