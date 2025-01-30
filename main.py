@@ -82,30 +82,6 @@ vectordb = FAISS.from_documents(
 )
 
 
-
-# Define Retriever Tool
-# class RetrieverTool(Tool):
-#     name = "retriever"
-#     description = (
-#         "Using semantic similarity, retrieves documents from the knowledge base."
-#         ) 
-#     output_type = str 
-
-#     def __init__(self, vectordb, **kwargs):
-#         self.vectordb = vectordb
-#         super().__init__(**kwargs)
-
-#     def forward(self, query: str) -> str:
-#         assert isinstance(query, str), "Query must be a string"
-#         docs = self.vectordb.similarity_search(query, k=7)
-#         return "\n Retrieved documents:\n" + "".join(
-#             [f"==== Document {i} ====\n" + doc.page_content for i, doc in enumerate(docs)]
-#         )
-
-# # Instantiate Retriever Tool
-# retriever_tool = RetrieverTool(vectordb)
-
-
 # Define Retriever Tool
 class RetrieverTool(Tool):
     name = "retriever"
@@ -135,7 +111,6 @@ class RetrieverTool(Tool):
 retriever_tool = RetrieverTool(vectordb)
 
 
-
 # Set up Groq API key
 os.environ["GROQ_API_KEY"] = "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"
 
@@ -150,23 +125,6 @@ llm = ChatGroq(
 openai_role_conversions = {
     MessageRole.TOOL_RESPONSE: MessageRole.USER,
 }
-
-# class OpenAIEngine:
-#     def __init__(self, model_name="llama3-groq-70b-8192-tool-use-preview"):
-#         self.model_name = model_name
-#         self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-
-#     def __call__(self, messages, stop_sequences=[]):
-#         messages = get_clean_message_list(messages, role_conversions=openai_role_conversions)
-#         response = self.client.query(
-#             model=self.model_name,
-#             messages=messages,
-#             stop=stop_sequences,
-#             temperature=0.5,
-#             max_tokens=2048,
-#         )
-#         return response.choices[0].message.content
-
 
 
 class OpenAIEngine:
