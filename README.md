@@ -20,6 +20,7 @@ Drop your PDF files into the `DATA` folder
 
 3. Set your API key
 Create a `.env` file in the project root
+
 Add your Groq API key to the `.env` file
 ```bash
 GROQ_API_KEY="your api key"
