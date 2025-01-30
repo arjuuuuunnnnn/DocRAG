@@ -14,6 +14,7 @@ from langchain.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_groq import ChatGroq
 from groq import Groq
+from dotenv import load_dotenv
 from transformers.agents import Tool, ReactJsonAgent
 
 
@@ -112,7 +113,10 @@ retriever_tool = RetrieverTool(vectordb)
 
 
 # Set up Groq API key
-os.environ["GROQ_API_KEY"] = "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"
+load_dotenv()
+
+# os.environ["GROQ_API_KEY"] = "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"
+# os.environ["GROQ_API_KEY"] = 
 
 # Initialize ChatGroq
 llm = ChatGroq(
