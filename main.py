@@ -112,11 +112,8 @@ class RetrieverTool(Tool):
 retriever_tool = RetrieverTool(vectordb)
 
 
-# Set up Groq API key
+# Groq API key
 load_dotenv()
-
-# os.environ["GROQ_API_KEY"] = "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"
-# os.environ["GROQ_API_KEY"] = 
 
 # Initialize ChatGroq
 llm = ChatGroq(
